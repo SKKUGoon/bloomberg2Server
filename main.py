@@ -135,6 +135,10 @@ class BbgInsert:
         pb = self.req_bdh(kos200, 'BEST_PX_BPS_RATIO')
         ep = self.req_bdp(kos200, 'BEST_EPS')
 
+        cpe = self.req_bdh(kos200, 'PE_RATIO')
+        cpb = self.req_bdh(kos200, 'PX_TO_BOOK_RATIO')
+        cep = self.req_bdp(kos200, 'IS_EPS')
+
         for r_pe in pe:
             self.ins_data(r_pe)
 
@@ -143,6 +147,15 @@ class BbgInsert:
 
         for r_ep in ep:
             self.ins_data(r_ep)
+
+        for r_cpe in cpe:
+            self.ins_data(r_cpe)
+
+        for r_cpb in cpb:
+            self.ins_data(r_cpb)
+
+        for r_cep in cep:
+            self.ins_data(r_cep)
 
 
 if __name__ == '__main__':
