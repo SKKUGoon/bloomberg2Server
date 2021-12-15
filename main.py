@@ -89,9 +89,11 @@ class BbgInsert:
             end_date=self.yst
         )
         dnp = df.to_numpy().flatten()
+        comp = [_[0] for _ in df.columns]
         print(f"[BBG] >>> Request Completed")
         prem = list()
-        for stk, val in zip(company, dnp):
+
+        for stk, val in zip(comp, dnp):
             row = (
                 self.tdy.strftime('%Y%m%d'),  # date
                 stk[:6],  # stock number in KRX
@@ -108,7 +110,8 @@ class BbgInsert:
         dnp = df.to_numpy().flatten()
         print(f"[BBG] >>> Request Completed")
         prem = list()
-        for stk, val in zip(company, dnp):
+        comp = [_[0] for _ in df.columns]
+        for stk, val in zip(comp, dnp):
             row = (
                 self.tdy.strftime('%Y%m%d'),
                 stk[:6],
@@ -162,5 +165,3 @@ if __name__ == '__main__':
     bbg = BbgInsert()
     bbg.create_table()
     bbg.main()
-
-
