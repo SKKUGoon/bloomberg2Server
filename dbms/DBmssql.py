@@ -190,14 +190,3 @@ class MSSQL:
         row = c.fetchall()
         c.close()
         return [_ for _ in row]
-
-
-if __name__ == '__main__':
-    c = MSSQL().instance()
-    # Login Test
-    c.login(id='wsol1', pw='wsol1')
-
-    tcol1 = ['FUND_ID', 'QTY_BEF', 'QTY_TR', 'QTY_CA', 'SEC_ID']
-    tcol2 = ['STK_CD', 'ISIN_CD']
-    var1 = c.select_db("WOORIFS", "dbo", "BMKA1000", column=tcol1, condition="PR_DATE=20210929 and SEC_ID='KR7089860001'")
-    var2 = c.select_db("WFNS2DB", "", "TS_STOCK", column=tcol2)
