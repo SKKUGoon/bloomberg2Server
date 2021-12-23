@@ -5,6 +5,8 @@ from xbbg import blp
 from typing import Iterable, List, Tuple
 from datetime import datetime, timedelta
 import json
+import time
+
 
 def get_token(target:str) -> str:
     """
@@ -81,7 +83,7 @@ class BbgInsert:
         return r
 
     def req_bdh(self, company:Iterable, flds:str) -> [Tuple]:
-        print(f"[BBG] >>> Requesting {flds} for {len(company)} Amount of Individual Companies...")
+        print(f"[BDH] >>> Requesting {flds} for {len(company)} Amount of Individual Companies...")
         df = blp.bdh(
             company,
             [flds],
@@ -105,12 +107,12 @@ class BbgInsert:
         return prem
 
     def req_bdp(self, company:Iterable, flds:str) -> [Tuple]:
-        print(f"[BBG] >>> Requesting {flds} for {len(company)} Amount of Individual Companies...")
+        print(f"[BDP] >>> Requesting {flds} for {len(company)} Amount of Individual Companies...")
         df = blp.bdp(company, [flds])
         dnp = df.to_numpy().flatten()
         print(f"[BBG] >>> Request Completed")
         prem = list()
-        comp = [_[0] for _ in df.columns]
+        comp = df.index
         for stk, val in zip(comp, dnp):
             row = (
                 self.tdy.strftime('%Y%m%d'),
@@ -134,29 +136,38 @@ class BbgInsert:
 
     def main(self):
         kos200 = self.set_data()
+        # Insert PER Estimate
         pe = self.req_bdh(kos200, 'BEST_PE_RATIO')
-        pb = self.req_bdh(kos200, 'BEST_PX_BPS_RATIO')
-        ep = self.req_bdp(kos200, 'BEST_EPS')
-
-        cpe = self.req_bdh(kos200, 'PE_RATIO')
-        cpb = self.req_bdh(kos200, 'PX_TO_BOOK_RATIO')
-        cep = self.req_bdp(kos200, 'IS_EPS')
-
         for r_pe in pe:
             self.ins_data(r_pe)
+        time.sleep(3)
 
+        # Insert PBR  Estimate
+        pb = self.req_bdh(kos200, 'BEST_PX_BPS_RATIO')
         for r_pb in pb:
             self.ins_data(r_pb)
+        time.sleep(3)
 
+        # Insert EPS  Estimate
+        ep = self.req_bdp(kos200, 'BEST_EPS')
         for r_ep in ep:
             self.ins_data(r_ep)
+        time.sleep(3)
 
+        # Insert PER
+        cpe = self.req_bdh(kos200, 'PE_RATIO')
         for r_cpe in cpe:
             self.ins_data(r_cpe)
+        time.sleep(3)
 
+        # Insert PBR
+        cpb = self.req_bdh(kos200, 'PX_TO_BOOK_RATIO')
         for r_cpb in cpb:
             self.ins_data(r_cpb)
+        time.sleep(3)
 
+        # Insert EPS
+        cep = self.req_bdp(kos200, 'IS_EPS')
         for r_cep in cep:
             self.ins_data(r_cep)
 
