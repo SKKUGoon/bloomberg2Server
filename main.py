@@ -68,8 +68,10 @@ class BbgInsert:
         )
 
     def set_data(self) -> List:
+        d = datetime.today() - timedelta(days=7)
         col = ['stk_no']
-        cond = f"year = 2021 and chg_no = 11"# TODO: Change it to pick up most recent
+        # Get KOSPI 200
+        cond = f"year = {d.year} and chg_no = {d.month} and ind_='ks200'"
         r = self.server.select_db(
             database='WSOL',
             schema='dbo',
