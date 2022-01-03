@@ -28,13 +28,18 @@ class BbgInsert:
     yst = tdy - timedelta(days=1)
     kor_tag = 'KS Equity'
 
-    def __init__(self):
+    def __init__(self, rob=False, robbing=1):
         self.server = MSSQL.instance()
         self.server.login(
             id=get_token('id'),
             pw=get_token('pw')
         )
         # Monday Check
+        if rob is True:
+            self.tdy = datetime.today() - timedelta(days=robbing)
+            self.yst = self.tdy - timedelta(days=1)
+            print(f"Robbing date set to {self.tdy}")
+
         self.__date_excp_chk(self.tdy)
 
     def __date_excp_chk(self, date:datetime) -> None:
@@ -178,3 +183,28 @@ if __name__ == '__main__':
     bbg = BbgInsert()
     bbg.create_table()
     bbg.main()
+
+    # Empty Bloomberg
+
+#    rob_past = 17
+#    while True:
+#        bbgrob = BbgInsert(rob=True, robbing=rob_past)
+#
+#        # Check if today is the last day of the month
+#        rob_date = datetime(2021, 12, 31).strftime('%Y%m%d')
+#        tdy = datetime.now().strftime('%Y%m%d')
+#        if tdy != rob_date:
+#            break
+#
+#        print("Last Day of the month. Empty out Bloomberg data.")
+#        print(
+#            f"Robbing {bbgrob.yst} data."
+#        )
+#        try:
+#            bbgrob.main()
+#        except Exception as e:
+#            print(e)
+#        rob_past += 1
+#        time.sleep(1)
+
+
